@@ -1,4 +1,106 @@
-.App {
-  padding: 20px;
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Yeon+Sung&display=swap');
+/* google web font - 원하는 폰트 - use on the web - @import! */
+
+
+body {
+  background-color: #f6f6f6;
+  display: flex;
+  justify-content: center;
+  align-items: center; /* display 속성이 flex 일때 세로 축 기준으로 가운데 정렬*/
+  font-family: 'Nanum Pen Script';
+  min-height: 100vh;
+  margin: 0;
 }
 
+/* 미디어 쿼리 : 너비가 650 이상일때만 적용! - 반응형 웹! */
+@media (min-width : 650px) {
+  .App{
+    width: 640px;
+  }
+}
+
+/* vw : 650 이하 일때 90 viewport-width : 지금 현재 화면에서 90%*/
+@media (max-width : 650px) { 
+  .App{
+    width: 90vw;
+  }
+}
+
+#root {
+  background-color: white;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.App{
+  min-height: 100vh;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* MyButton 세팅 */
+.MyButton {
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  font-size: 18px;
+
+  white-space: nowrap; /* 버튼 글자 잘려서 밑줄로 내려가지 않게 방지! */
+  font-family: 'Nanum Pen Script';
+}
+
+.MyButton_default {
+  background-color: #ececec;
+  color: black;
+}
+
+.MyButton_positive {
+  background-color: #64c964;
+  color: white;
+}
+
+.MyButton_negative {
+  background-color: #fd565f;
+  color: white;
+}
+
+/* Header 태그 */
+
+header {
+  padding-top: 20px;
+  padding-bottom: 20px;
+
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+/*header 바로 밑의 자식*/
+header > div {
+  display: flex;
+}
+
+header .head_text {
+  width : 50%;
+  font-size: 25px;
+  justify-content: center;
+}
+
+header .head_btn_left{
+  width:25%;
+  justify-content: start; /*왼쪽으로 밀착*/
+}
+
+header .head_btn_right{
+  width:25%;
+  justify-content: end;   /*오른쪽으로 밀착*/
+}
+
+header button {
+  font-family: "Nanum Pen Script";
+}

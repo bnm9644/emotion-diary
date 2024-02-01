@@ -1,12 +1,14 @@
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import RouteTest from './components/RouteTest';
-
 import Home from './pages/Home';
 import Diary from './pages/Diary';
 import Edit from './pages/Edit';
 import New from './pages/New';
+
+// component!
+import MyButton from './components/MyButton';
+import MyHeader from './components/MyHeader';
 
 // BrowserRouter로 감싸져 있는 부분, 브라우저 url 과 맵핑 가능.
 
@@ -24,12 +26,23 @@ import New from './pages/New';
   ★★ <Link to= {"/a"}>a</Link>
 
   - Link to!
+
+  <img src={process.env.PUBLIC_URL + '/assets/emotion1.png'} /> : process.env.PUBLIC_URL : 프로젝트 파일의 public 폴더를 바로 사용 할수 있게 함
 */
 function App() {
   return (
     <BrowserRouter>
       <div className="App">
+        <MyHeader headtext={"App"} 
+                  leftChild={ <MyButton text={'왼쪽 버튼'} onClick={()=> alert('왼쪽 클릭')} /> } 
+                  rightChild={ <MyButton text={'오른쪽 버튼'} onClick={()=> alert('오른쪽 클릭')} /> }
+        />
         <h2>App.js</h2>
+
+        <MyButton text={'버튼'} onClick={()=>alert('버튼 클릭')} type={"positive"}/>
+        <MyButton text={'버튼'} onClick={()=>alert('버튼 클릭')}/>
+        <MyButton text={'버튼'} onClick={()=>alert('버튼 클릭')} type={"negative"}/>
+        
         <Routes>
           <Route path='/' element={<Home />} /> 
           <Route path='/new' element={<New />} />
@@ -37,7 +50,6 @@ function App() {
           <Route path='/diary/:id' element={<Diary />} /> 
           {/* ★★ ':' (콜론) 을 사용! -> ex) /:id , id 라는 이름으로 뒤의 값 전달. 전달 값이 없더래도 동일한 요청 가능 */}
         </Routes>
-        <RouteTest />
       </div>
     </BrowserRouter>  
   );
