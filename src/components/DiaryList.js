@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MyButton from "./MyButton";
+import DiaryItem from "./DiaryItem";
 
 // 시간순 정렬
 const sortOptionList = [
@@ -98,9 +99,7 @@ const DiaryList = ({diaryList}) => {
     </div> 
         
     {getProCessedDiaryList().map((it) => (
-        <div key={it.id}>
-          {it.content} {it.emotion}
-        </div>
+       <DiaryItem key = {it.id} {...it}/>
     ))}
     </div>
   );
