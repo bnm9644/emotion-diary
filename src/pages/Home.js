@@ -55,7 +55,7 @@ const Home = () => {
     );
   }
 
-  // 월 하나씩 증가 하는 함수
+  // 월 하나씩 감소 하는 함수
   const decreaseMonth = () => {
     setCurDate(
       new Date(curDate.getFullYear(), curDate.getMonth()-1, curDate.getDate())
