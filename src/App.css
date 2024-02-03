@@ -104,3 +104,37 @@ header .head_btn_right{
 header button {
   font-family: "Nanum Pen Script";
 }
+
+/* DiaryList Component 스타일링 */
+.DiaryList .menu_wrapper {
+  margin-top: 20px;
+  margin-bottom: 30px;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.DiaryList .menu_wrapper .right_col {
+  flex-grow: 1; /* 부모 아래 모든 너비 자신이 차지*/
+}
+
+.DiaryList .menu_wrapper .right_col button{
+  width: 100%;
+}
+
+
+.DiaryList .ControlMenu {
+  margin-right: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ececec;
+
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  cursor: pointer;
+  font-family: 'Nanum Pen Script';
+  font-size: 18px;
+}
