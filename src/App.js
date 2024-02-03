@@ -1,3 +1,5 @@
+import React,{ useReducer,useRef } from 'react';
+
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -6,9 +8,103 @@ import Diary from './pages/Diary';
 import Edit from './pages/Edit';
 import New from './pages/New';
 
-// component!
-import MyButton from './components/MyButton';
-import MyHeader from './components/MyHeader';
+const reducer = (state, action) => {
+  let newState = [];
+
+  switch (action.type) {
+    case 'INIT' : {
+      return action.data;
+    } 
+
+    case 'CREATE' : {
+      const newItem = {
+        ...action.data
+      };
+      newState = [newItem, ...state];
+      break;
+    }
+
+    case 'REMOVE' : {
+      newState = state.filter((it) => it.id !== action.targetId);
+      break;
+    } 
+
+    case 'EDIT' : {
+      newState = state.map((it) => it.id === action.data.id? {...action.data}: it)
+      break;
+    }
+
+    default : return false;
+    
+  }
+
+  return newState;
+}
+
+export const DiaryStateContext = React.createContext(); // 데이터 공급!
+export const DairyDispatchContext = React.createContext(); //Dispatch 함수 실행
+
+function App() {
+
+  const [data, dispatch] = useReducer(reducer, []); // useReducer()!
+
+  const dataId = useRef(0);
+
+  // dispatch 함수 만들기
+  // CREATE - 날짜 , 내용 , 감정점수 - data 객체로 id,date 등등 전달 -> newItem에서 받고 처리
+  const onCreate = (date,content,emotion) => {
+    dispatch ({type : 'CREATE', 
+    data :{
+      id : dataId.current,
+      date : new Date(date).getTime(),
+      content,
+      emotion
+    },
+  });
+    dataId.current += 1;
+  };
+
+  // REMOVE - ID 내용 받아 그것만 삭제  - targetId 전달 -> targetId 필터한 나머지 요소 배열 정리
+  const onRemove = (targetId) => {
+    dispatch({type : 'REMOVE', 
+    targetId
+  });
+  };
+
+  // EDIT - 어떤 ID를 수정할지 중요 , 언제 바뀌었는지, 어떤 내용이 바뀌고 감정점수가 어떻게 바뀌었는가 체크!
+  const onEdit = (targetId, date, content, emotion) => {
+    dispatch ({type : 'EDIT', 
+    data :{
+      id : targetId,
+      date : new Date(date).getTime(),
+      content,
+      emotion
+    },
+  }); 
+  }; 
+
+
+  return (
+    <DiaryStateContext.Provider value = {data}>
+      <DairyDispatchContext.Provider value = {{onCreate , onEdit , onRemove}}>
+        <BrowserRouter>
+          <div className="App">
+            <Routes>
+              <Route path='/' element={<Home />} /> 
+              <Route path='/new' element={<New />} />
+              <Route path='/edit' element={<Edit />} />
+              <Route path='/diary/:id' element={<Diary />} /> 
+              {/* ★★ ':' (콜론) 을 사용! -> ex) /:id , id 라는 이름으로 뒤의 값 전달. 전달 값이 없더래도 동일한 요청 가능 */}
+            </Routes>
+          </div>
+        </BrowserRouter>  
+      </DairyDispatchContext.Provider>
+    </DiaryStateContext.Provider>
+  );
+}
+
+export default App;
+
 
 // BrowserRouter로 감싸져 있는 부분, 브라우저 url 과 맵핑 가능.
 
@@ -29,37 +125,8 @@ import MyHeader from './components/MyHeader';
 
   <img src={process.env.PUBLIC_URL + '/assets/emotion1.png'} /> : process.env.PUBLIC_URL : 프로젝트 파일의 public 폴더를 바로 사용 할수 있게 함
 */
-function App() {
-  return (
-    <BrowserRouter>
-      <div className="App">
-        <MyHeader headtext={"App"} 
-                  leftChild={ <MyButton text={'왼쪽 버튼'} onClick={()=> alert('왼쪽 클릭')} /> } 
-                  rightChild={ <MyButton text={'오른쪽 버튼'} onClick={()=> alert('오른쪽 클릭')} /> }
-        />
-        <h2>App.js</h2>
-
-        <MyButton text={'버튼'} onClick={()=>alert('버튼 클릭')} type={"positive"}/>
-        <MyButton text={'버튼'} onClick={()=>alert('버튼 클릭')}/>
-        <MyButton text={'버튼'} onClick={()=>alert('버튼 클릭')} type={"negative"}/>
-        
-        <Routes>
-          <Route path='/' element={<Home />} /> 
-          <Route path='/new' element={<New />} />
-          <Route path='/edit' element={<Edit />} />
-          <Route path='/diary/:id' element={<Diary />} /> 
-          {/* ★★ ':' (콜론) 을 사용! -> ex) /:id , id 라는 이름으로 뒤의 값 전달. 전달 값이 없더래도 동일한 요청 가능 */}
-        </Routes>
-      </div>
-    </BrowserRouter>  
-  );
-}
-
-export default App;
-
 
 /*
-
   페이지 라우팅 (PAGE ROUTING) :
 
   라우팅 : 어떤 네트워크 내에서 통신 데이터를 내보낼 경로 선택하는 과정
@@ -101,4 +168,9 @@ ex) url/edit?id=10&mode=dark  , 별도의 맵핑 하지 않아도 자동 맵핑 
 
 ex) navigate (-1) : 뒤로 가기
 
+-> Home : 일기 리스트 , New - 일기 생성 로직 , Edit - 일기 수정 로직 , Diary - 한 일기의 데이터
  */ 
+
+/*
+  상태 방식 : App - 일기 데이터 state
+*/
