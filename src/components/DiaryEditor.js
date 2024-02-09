@@ -7,7 +7,7 @@ import MyButton from "./MyButton";
 import MyHeader from "./MyHeader"; 
 import EmotionItem from "./EmotionItem";
 import { useContext } from "react";
-import { DairyDispatchContext } from "../App";
+import { DiaryDispatchContext } from "../App";
 
 const env = process.env;
 env.PUBLIC_URL = env.PUBLIC_URL || "";
@@ -45,7 +45,6 @@ const emotionList = [
   }
 ]
 
-
 // Date 시간 변환 
 const getStringDate = (date) => {
   return date.toISOString().slice(0,10); //  MDN Web Docs 참고
@@ -54,14 +53,18 @@ const getStringDate = (date) => {
 const DiaryEditor = () => {
   
   const contentRef = useRef();
-  const [content,setContent]  = useState(""); //오늘의 일기 state 맵핑 확인
-  const [emotion, setEmotion] = useState(3); // 어떤 감정 선택 한건지 확인 하게 하는 state
+  const [content,setContent]  = useState(""); // 오늘의 일기 state 맵핑 확인
+  const [emotion, setEmotion] = useState(3);  // 어떤 감정 선택 한건지 확인 하게 하는 state
 
-  const [onCreate] = useContext(DairyDispatchContext);
+  // 배열 받으면 안됨! - 배열 받아서 자꾸 에러 난거임
+  const {onCreate} = useContext(DiaryDispatchContext);
+  
   // EmotionItem 을 클릭 할때 emotion state가 변하는 함수
   const handleClickEmote = (emotion) => {
     setEmotion(emotion);
   }
+
+  const navigate = useNavigate();
 
   // 작성완료 버튼 누르고 정보 저장까지
   const handleSubmit = () => {
@@ -69,6 +72,9 @@ const DiaryEditor = () => {
       contentRef.current.focus();
       return;
     }
+
+    onCreate(date, content,emotion);
+    navigate('/', {replace : true} ); // replace : true 옵션은 뒤로 못오게 막는 옵션,
   }
 
   const [date, setDate] = useState(getStringDate(new Date()));
@@ -106,7 +112,7 @@ const DiaryEditor = () => {
         </section>
         <section>
           <h4>오늘의 일기</h4>
-          <div ClassName = "input_box text_wrapper">
+          <div className = "input_box text_wrapper">
             <textarea 
               placeholder="오늘은 어땠나요?"
               ref = {contentRef} 
