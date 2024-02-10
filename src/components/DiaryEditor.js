@@ -1,60 +1,27 @@
 //new.js 일기 작성의 날짜 받는 부분과 헤더 부분 이관
 
 import { useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 
 import MyButton from "./MyButton";
 import MyHeader from "./MyHeader"; 
 import EmotionItem from "./EmotionItem";
-import { useContext } from "react";
-import { DiaryDispatchContext } from "../App";
+import { DiaryDispatchContext } from "../App.js";
+
+import { getStringDate } from "../util/date.js"
+import { emotionList } from "../util/emotion.js";
 
 const env = process.env;
 env.PUBLIC_URL = env.PUBLIC_URL || "";
 
 // 감정 List 
-const emotionList = [
-  {
-    emotion_id:1,
-    emotion_img : process.env.PUBLIC_URL + `/assets/emotion1.png`,
-    emotion_descript : '완전 좋음'
-  },
-
-  {
-    emotion_id:2,
-    emotion_img : process.env.PUBLIC_URL + `/assets/emotion2.png`,
-    emotion_descript : '좋음'
-  },
-
-  {
-    emotion_id:3,
-    emotion_img : process.env.PUBLIC_URL + `/assets/emotion3.png`,
-    emotion_descript : '그닥'
-  },
-
-  {
-    emotion_id:4,
-    emotion_img : process.env.PUBLIC_URL + `/assets/emotion4.png`,
-    emotion_descript : '나쁨'
-  },
-
-  {
-    emotion_id:5,
-    emotion_img : process.env.PUBLIC_URL + `/assets/emotion5.png`,
-    emotion_descript : '끔찍함'
-  }
-]
-
-// Date 시간 변환 
-const getStringDate = (date) => {
-  return date.toISOString().slice(0,10); //  MDN Web Docs 참고
-}
 
 const DiaryEditor = ({isEdit, originData}) => {
   
   const contentRef = useRef();
   const [content,setContent]  = useState(""); // 오늘의 일기 state 맵핑 확인
   const [emotion, setEmotion] = useState(3);  // 어떤 감정 선택 한건지 확인 하게 하는 state
+  const [date, setDate] = useState(getStringDate(new Date()));
 
   // 배열 받으면 안됨! - 배열 받아서 자꾸 에러 난거임
   const {onCreate, onEdit} = useContext(DiaryDispatchContext);
@@ -94,7 +61,7 @@ const DiaryEditor = ({isEdit, originData}) => {
     }
   },[isEdit,originData]);
 
-  const [date, setDate] = useState(getStringDate(new Date()));
+  
   const Navigate = useNavigate();
 
   return (

@@ -1,15 +1,84 @@
-import { useParams } from "react-router-dom"; //React Router의 사용자 정의 Hooks - custom Hooks
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom"; //React Router의 사용자 정의 Hooks - custom Hooks
+import { DiaryStateContext } from "../App";
+import { getStringDate } from "../util/date.js"
+import MyHeader from "../components/MyHeader.js";
+import MyButton from "../components/MyButton.js";
+import { emotionList } from "../util/emotion.js";
 
 const Diary = () => {
 
-  const {id} = useParams();  
+  const {id} = useParams();   // 조회 하는 id의 일기 데이터를 가져와야 함
+  const diaryList = useContext(DiaryStateContext);
+  const navigate = useNavigate();   // 뒤로 가기 방지!
+  const [data, setData] = useState();
 
-  return (
-    <div>
-      <h3>Diary</h3>
-      <p>이곳은 일기 상세 페이지 입니다.</p>
+  useEffect(()=>{
+    if(diaryList.length >= 1) {
+      const targetDiary = diaryList.find(
+          (it) => parseInt(it.id) === parseInt(id)
+      );
+
+      console.log(targetDiary); // 해당하는 id에 맞게 잘 가져오는지 Check!
+
+      // 일기가 존재 할 때
+      if(targetDiary) {
+        setData(targetDiary);
+      } else {
+        alert("없는 일기입니다.");
+        navigate("/", {replace: true});
+      }
+    }
+  }, [id,diaryList]);
+
+  if(!data) {
+    return <div className = "DiaryPage">로딩중입니다...</div>
+  } else {
+
+    const curEmotionData = emotionList.find(
+      (it) => parseInt(it.emotion_id) === parseInt(data.emotion)
+    );
+
+    console.log(curEmotionData);
+
+    return (
+    <div className = "DiaryPage">
+      <MyHeader 
+        headtext={`${getStringDate(new Date(data.date))} 의 기록`} 
+        leftChild={
+          <MyButton text ={"< 뒤로 가기"} onClick={() => navigate(-1)} />
+        }
+        rightChild={
+          <MyButton text ={"수정하기"} onClick={() => navigate(`/edit/${data.id}`)} />
+        }
+    />
+    <article>
+        <section>
+          <h4>오늘의 감정</h4>
+          <div 
+            className = {[
+              "diary_img_wrapper", 
+              `diary_img_wrapper_${data.emotion}`,
+            ].join(" ")}
+          >
+            <img src = {curEmotionData.emotion_img} />
+            <div className = "emotion_descript">
+              {curEmotionData.emotion_descript}
+            </div>
+          </div>
+        </section>
+        <section>
+          <h4>오늘의 일기</h4>
+          <div className="diary_content_wrapper">
+            <p>{data.content}</p>
+          </div>
+        </section>
+    </article>
     </div>
-  );
+    
+    );
+  }
+
 };
 
 export default Diary;  

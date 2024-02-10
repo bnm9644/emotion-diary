@@ -28,6 +28,7 @@ const Edit = () => {
       if(targetDiary) { //state에 넣어 사용!
         setOriginData(targetDiary);
       } else {
+        alert("없는 일기입니다.");
         navigate('/', {replace : true});
       }
 
