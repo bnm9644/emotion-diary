@@ -1,7 +1,7 @@
 //new.js 일기 작성의 날짜 받는 부분과 헤더 부분 이관
 
 import { useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import MyButton from "./MyButton";
 import MyHeader from "./MyHeader"; 
@@ -50,14 +50,14 @@ const getStringDate = (date) => {
   return date.toISOString().slice(0,10); //  MDN Web Docs 참고
 }
 
-const DiaryEditor = () => {
+const DiaryEditor = ({isEdit, originData}) => {
   
   const contentRef = useRef();
   const [content,setContent]  = useState(""); // 오늘의 일기 state 맵핑 확인
   const [emotion, setEmotion] = useState(3);  // 어떤 감정 선택 한건지 확인 하게 하는 state
 
   // 배열 받으면 안됨! - 배열 받아서 자꾸 에러 난거임
-  const {onCreate} = useContext(DiaryDispatchContext);
+  const {onCreate, onEdit} = useContext(DiaryDispatchContext);
   
   // EmotionItem 을 클릭 할때 emotion state가 변하는 함수
   const handleClickEmote = (emotion) => {
@@ -73,9 +73,26 @@ const DiaryEditor = () => {
       return;
     }
 
-    onCreate(date, content,emotion);
+    if(window.confirm(isEdit? "일기를 수정하시겠습니까?" : "새로운 일기를 작성하시겠습니까? ")) {
+      if(!isEdit) {
+        onCreate(date, content,emotion);
+      } else {
+        onEdit(originData.id, date, content, emotion);
+      }
+    };
+
+    
     navigate('/', {replace : true} ); // replace : true 옵션은 뒤로 못오게 막는 옵션,
   }
+
+  useEffect(() => {
+    //isEdit이 true일때만 수행
+    if(isEdit) {
+      setDate(getStringDate(new Date(parseInt(originData.date))));
+      setEmotion(originData.emotion);
+      setContent(originData.content);
+    }
+  },[isEdit,originData]);
 
   const [date, setDate] = useState(getStringDate(new Date()));
   const Navigate = useNavigate();
@@ -84,7 +101,7 @@ const DiaryEditor = () => {
     <div className="DiaryEditor">
       {/* 헤더 창에 센터 문구와  왼쪽 버튼, 오른쪽 버튼 지정 및 기능 설정케 해줌! */}
       <MyHeader 
-        headtext={'일기 작성'}
+        headtext={isEdit? "일기 수정하기" : "새 일기 쓰기"}
         leftChild={ <MyButton text ={"< 뒤로 가기"} onClick={()=> Navigate(-1)}/> }
       />
       <div>

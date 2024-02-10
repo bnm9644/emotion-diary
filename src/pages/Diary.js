@@ -2,8 +2,7 @@ import { useParams } from "react-router-dom"; //React Router의 사용자 정의
 
 const Diary = () => {
 
-  const {id} = useParams();
-  console.log(id);
+  const {id} = useParams();  
 
   return (
     <div>

@@ -74,6 +74,7 @@ const dummyData = [
 
 function App() {
 
+  // 데이터 저장 state!
   const [data, dispatch] = useReducer(reducer, dummyData); // useReducer()!
 
   const dataId = useRef(0);
@@ -120,7 +121,7 @@ function App() {
             <Routes>
               <Route path='/' element={<Home />} /> 
               <Route path='/new' element={<New />} />
-              <Route path='/edit' element={<Edit />} />
+              <Route path='/edit/:id' element={<Edit />} />
               <Route path='/diary/:id' element={<Diary />} /> 
               {/* ★★ ':' (콜론) 을 사용! -> ex) /:id , id 라는 이름으로 뒤의 값 전달. 전달 값이 없더래도 동일한 요청 가능 */}
             </Routes>
