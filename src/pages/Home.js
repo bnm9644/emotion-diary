@@ -29,11 +29,22 @@ const Home = () => {
         1
       ).getTime();
 
+      /* 
+        ★ 3번째 버그 - 31일의 노출이 안되는 현상!
+        lastDay를 0시 0분 0초로 잡으면 안됨 
+        그날의 끝인 23시 59분 59초 까지 잡아야 함, 
+        javascript의 시간 객체 사용 시엔 시간 비교 시 
+        시/분/초 까지 영향 미침
+       */ 
+
       // console.log(new Date(lastDay)); // 해당 월의 마지막 날짜
       const lastDay = new Date(
         curDate.getFullYear(),
-        curDate.getMonth() + 1,
-        0
+        curDate.getMonth() + 1, // 마지막 날짜만 입력!
+        0,
+        23,
+        59,
+        59,
       ).getTime();    
 
       // 해당 월의 첫째날과 마지막날 사이에 작성된 일기 추리기 위함

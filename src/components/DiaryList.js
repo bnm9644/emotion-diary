@@ -34,10 +34,9 @@ const ControlMenu = ({value, onChange, optionList}) => {
 
 const DiaryList = ({diaryList}) => {
 
-  // 
   const navigate = useNavigate();
 
-  // 선택 조건에 맞게 정렬
+  // 선택 조건에 맞게 정렬 , latest로 인한 2번째 버그 - 오타 주의! - 이런 오타를 막아주는 기능을 갖고 있는 TypeScript를 배울 것!
   const [sortType, setSortType] = useState("latest");
   // 감정상태에 맞게 정렬
   const [filter,setFilter] = useState("all");

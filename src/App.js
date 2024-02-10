@@ -77,7 +77,10 @@ function App() {
   // 데이터 저장 state!
   const [data, dispatch] = useReducer(reducer, dummyData); // useReducer()!
 
-  const dataId = useRef(0);
+  const dataId = useRef(6); // dummydata로 임시 설정한 부분때메 발생!
+  /* 1번째 버그 : Encountered two children with the same key, `1` 
+                  즉 초기 값 설정 issue 로 인한 same key 오류 발생!
+  */ 
 
   // dispatch 함수 만들기
   // CREATE - 날짜 , 내용 , 감정점수 - data 객체로 id,date 등등 전달 -> newItem에서 받고 처리
