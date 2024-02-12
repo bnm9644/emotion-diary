@@ -92,15 +92,18 @@ function App() {
   const [data, dispatch] = useReducer(reducer, []); // useReducer()!
 
   useEffect (() => {
+    // 현재 저장된 일기 정보들 저장! - 빈 배열이면 falsy 하지 않고 truethy 하게 됨.
     const localData = localStorage.getItem("diary");
+
     if(localData) {
       // 내림차순 정렬
       const diaryList = JSON.parse(localData).sort(
         (a,b) => parseInt(b.id) - parseInt(a.id)
       );
-      dataId.current = parseInt(diaryList[0].id) + 1;      
-
-      dispatch({type : "INIT", data: diaryList});
+      if(diaryList.length >= 1) {
+        dataId.current = parseInt(diaryList[0].id) + 1; // 빈 배열의 0번째 id를 꺼내려 하니 안되어 Error 발생
+        dispatch({type : "INIT", data: diaryList});
+      }
     }
   } , []); 
 
@@ -271,6 +274,12 @@ ex) navigate (-1) : 뒤로 가기
       최신순 전부다 새일기쓰기 버튼 까지 새로 렌더 될 필요 없음,
       DiaryList의 ControlMenu 가 계속 랜더링 되고 있음
 
-   2) 수정하기 컴포넌트에 (DiaryEditor) - EmotionItem 컴포넌트가 쓸데 없이 렌더 됨, 오늘의 일기 수정 시.... 
+   2) 수정하기 컴포넌트에 (DiaryEditor) - EmotionItem 컴포넌트가 쓸데 없이 렌더 됨, 오늘의 일기 수정 시....
+   
+   
+   배포 (VSC를 관리자 모드로 실행)
+   - npm run build 
+   - serve -s build 입력 - 오류 발생 시엔 Set-ExecutionPolicy Unrestricted 치고 명령어 입력!
+   - 변경 사항이 있어서 내용 바꿀 시 localhost에 바로 적용 안됨 - serve -s build 를 해야 바뀜.
  */
  

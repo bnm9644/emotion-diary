@@ -17,6 +17,11 @@ const Edit = () => {
   const {id} = useParams();   
   const diaryList = useContext(DiaryStateContext); //DiaryStateContext가 제공하는 DiaryList 데이터 받아옴 -> 받아오면 id 값과 일치하는 일기 데이터만 꺼내주면 됨
   
+  useEffect( () => {   
+    const titleElement = document.getElementsByTagName('title')[0];
+    titleElement.innerHTML = `감정 일기장 - ${id}번 일기 수정`;
+  }, []);
+
   //Edit 컴포넌트가 마운트 될때 사용, useEffect!
   useEffect(() => {
     if(diaryList.length >= 1) {

@@ -13,6 +13,14 @@ const Diary = () => {
   const navigate = useNavigate();   // 뒤로 가기 방지!
   const [data, setData] = useState();
 
+  // 기능 구현 할때 마다 , title 내용 변경, Diary 상세 페이지가 켜질때 
+  // element 에서 title이라는 element 가지는 건 head 안의 title 태그 밖에 없음
+  // 문서 객체에서 title이라는 tagName을 갖는 모든 Element 가져와 배열로 반환
+  useEffect( () => {   
+    const titleElement = document.getElementsByTagName('title')[0];
+    titleElement.innerHTML = `감정 일기장 - ${id}번 일기`;
+  }, []); 
+
   useEffect(()=>{
     if(diaryList.length >= 1) {
       const targetDiary = diaryList.find(
