@@ -281,5 +281,15 @@ ex) navigate (-1) : 뒤로 가기
    - npm run build 
    - serve -s build 입력 - 오류 발생 시엔 Set-ExecutionPolicy Unrestricted 치고 명령어 입력!
    - 변경 사항이 있어서 내용 바꿀 시 localhost에 바로 적용 안됨 - serve -s build 를 해야 바뀜.
+
+   How to 배포
+   1) 서버 구축
+   2) 배포 솔루션 사용 - 
+      FireBase - 시작하기 - 프로젝트 만들기 - 지정 이름 입력 
+      - 구글 애널리스트 도구 체크 해제 - 계속 - 빌드 - Hosting - 시작하기 - Firebase CLI 설치 (npm 명령어 복사 - cmd(관리자 모드) 에 붙여 넣기) - 다음 - 프로젝트 초기화 - 
+      firebase login - Y - 
+      firebase init 진행 (★ 단 root 아래에서 바로 진행!) - y - hosting - enter! - Use an existing project 입력 - build - y
+      다음 - 밑에 여러 사이트 지원 - 다른 사이트 추가(지정 이름) - firebase.json 파일 - hosting ("site" : "지정 이름" ) 
+      - npm run build - firebase deploy - Hosting URL! 
  */
  
