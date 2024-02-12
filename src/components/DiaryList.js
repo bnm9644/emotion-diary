@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react"; 
 import { useNavigate } from "react-router-dom";
 import MyButton from "./MyButton";
 import DiaryItem from "./DiaryItem";
@@ -16,8 +16,19 @@ const filterOptionList = [
   {value : "bad", name : "안좋은 감정" }
 ];
 
-// 선택 조건 메뉴
-const ControlMenu = ({value, onChange, optionList}) => {
+/*최적화 1) - 선택 조건 메뉴 
+  Component를 함수의 인자로 전달하면 강화된 Component를 돌려 줌 
+  고차 Component : Component 하나를 인자로 전달받아 강화된 Component를 돌려 줌 
+  전달받은 prop이 값이 안 바뀌면 렌더링이 일어나지 않게 memoization 해줌
+  현재는 최신순 전부다 새 일기쓰기를 다시 렌더링 하지 않음
+
+  상태 변화 함수는 기본적으로 useCallBack 함수 처리 되어 나오기 때매 최적화 가능
+*/
+const ControlMenu = React.memo(({value, onChange, optionList}) => {
+  //렌더링  test
+  useEffect( () => {
+    console.log("Control Menu");
+  });
  return (
     <select 
       className="ControlMenu" 
@@ -30,7 +41,7 @@ const ControlMenu = ({value, onChange, optionList}) => {
      </option> )}
     </select>
  );
-};
+});
 
 const DiaryList = ({diaryList}) => {
 

@@ -1,7 +1,7 @@
 //new.js 일기 작성의 날짜 받는 부분과 헤더 부분 이관
 
 import { useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState, useContext, useCallback } from "react";
 
 import MyButton from "./MyButton";
 import MyHeader from "./MyHeader"; 
@@ -27,9 +27,10 @@ const DiaryEditor = ({isEdit, originData}) => {
   const {onCreate, onEdit , onRemove} = useContext(DiaryDispatchContext);
   
   // EmotionItem 을 클릭 할때 emotion state가 변하는 함수
-  const handleClickEmote = (emotion) => {
+  // 최적화 시켜야 하기 때문에, useCallBack 사용
+  const handleClickEmote = useCallback((emotion) => {
     setEmotion(emotion);
-  }
+  }, []);
 
   const navigate = useNavigate();
 
