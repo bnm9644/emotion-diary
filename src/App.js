@@ -1,4 +1,4 @@
-import React,{ useReducer,useRef } from 'react';
+import React,{ useEffect, useReducer,useRef } from 'react';
 
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -7,6 +7,12 @@ import Home from './pages/Home';
 import Diary from './pages/Diary';
 import Edit from './pages/Edit';
 import New from './pages/New';
+
+
+/* 일기 데이터를 변경 할때 마다 localStorage에 값 넣음,
+   모든 데이터 수정은 이 reducer가 처리하고 있음.
+   newState 가 변화 시 localStorage 데이터 넣으면 됨.
+ */ 
 
 const reducer = (state, action) => {
   let newState = [];
@@ -38,12 +44,14 @@ const reducer = (state, action) => {
     
   }
 
+  localStorage.setItem("diary" , JSON.stringify(newState));
   return newState;
 }
 
 export const DiaryStateContext = React.createContext(); // 데이터 공급!
 export const DiaryDispatchContext = React.createContext(); //Dispatch 함수 실행
 
+/*
 const dummyData = [
   {id : 1,
    emotion : 1,
@@ -71,13 +79,32 @@ const dummyData = [
     date : 1706951453361,
    }
 ]
+*/
 
 function App() {
 
-  // 데이터 저장 state!
-  const [data, dispatch] = useReducer(reducer, dummyData); // useReducer()!
+  /* 
+     component 가 mount 되었을 때 localStorage에 있는 값 꺼내, 
+     dataState 의 기초 값 사용 처리
+  */   
 
-  const dataId = useRef(6); // dummydata로 임시 설정한 부분때메 발생!
+  // 데이터 저장 state!
+  const [data, dispatch] = useReducer(reducer, []); // useReducer()!
+
+  useEffect (() => {
+    const localData = localStorage.getItem("diary");
+    if(localData) {
+      // 내림차순 정렬
+      const diaryList = JSON.parse(localData).sort(
+        (a,b) => parseInt(b.id) - parseInt(a.id)
+      );
+      dataId.current = parseInt(diaryList[0].id) + 1;      
+
+      dispatch({type : "INIT", data: diaryList});
+    }
+  } , []); 
+
+  const dataId = useRef(0); // dummydata로 임시 설정한 부분때메 발생!
   /* 1번째 버그 : Encountered two children with the same key, `1` 
                   즉 초기 값 설정 issue 로 인한 same key 오류 발생!
   */ 
@@ -86,35 +113,34 @@ function App() {
   // CREATE - 날짜 , 내용 , 감정점수 - data 객체로 id,date 등등 전달 -> newItem에서 받고 처리
   const onCreate = (date,content,emotion) => {
     dispatch ({type : 'CREATE', 
-    data :{
-      id : dataId.current,
-      date : new Date(date).getTime(),
-      content,
-      emotion
-    },
-  });
+      data :{
+        id : dataId.current,
+        date : new Date(date).getTime(),
+        content,
+        emotion
+      },
+    });
     dataId.current += 1;
   };
 
   // REMOVE - ID 내용 받아 그것만 삭제  - targetId 전달 -> targetId 필터한 나머지 요소 배열 정리
   const onRemove = (targetId) => {
     dispatch({type : 'REMOVE', 
-    targetId
-  });
+      targetId
+    });
   };
 
   // EDIT - 어떤 ID를 수정할지 중요 , 언제 바뀌었는지, 어떤 내용이 바뀌고 감정점수가 어떻게 바뀌었는가 체크!
   const onEdit = (targetId, date, content, emotion) => {
     dispatch ({type : 'EDIT', 
-    data :{
-      id : targetId,
-      date : new Date(date).getTime(),
-      content,
-      emotion
-    },
-  }); 
+      data :{
+        id : targetId,
+        date : new Date(date).getTime(),
+        content,
+        emotion
+      },
+    }); 
   }; 
-
 
   return (
     <DiaryStateContext.Provider value = {data}>
@@ -206,3 +232,38 @@ ex) navigate (-1) : 뒤로 가기
 /*
   상태 방식 : App - 일기 데이터 state
 */
+
+/*
+  https://developer.mozilla.org/ko/docs/Web/API/Web_Storage_API 참조
+  localStorage : 웹 브라우저의 Database 역할 , Key 와 Value 쌍으로 저장 ,
+                 브라우저 닫았다 열어도 데이터가 존재, 유효기간 없음 
+                 javascript 사용하거나, 브라우저 캐시 로컬 저장 Data를 지워야 사라짐
+
+  SessionStorage 에 데이터 저장 , 웹 브라우저가 꺼지면 Data 날라감.
+
+  ex) 
+  useEffect(() => {
+    localStorage.setItem('item', 10);
+    localStorage.setItem('item2', "20");
+    localStorage.setItem('item3', JSON.stringify({value:30})); 
+    // ★ 객체가 저장 시에는 Storage가 받아 들일수 없는 값, JSON.Stringfy로 직렬화 시켜 문자열 해석 처리!
+
+
+    // localStorage에 Data 꺼내오는 방법!
+    useEffect(() => {
+      const item1 = localStorage.getItem("item");
+      const item2 = localStorage.getItem("item2");
+      const item3 = localStorage.getItem("item3");
+      console.log(item1,item2,item3);
+    }, []);
+
+    ★★ -단 getItem으로 가져올 때, 
+    localStorage.getItem("key");  
+    localStorage에 들어가는 값들은 전부 '문자열' 로 바꿔 들어옴
+    문자열이면 상관 없지만, 만약 저장한 값이 '숫자'거나 '객체'면
+    숫자일 경우,  parseInt , 
+    객체일 경우,  Json.parse를 한번 더 처리 해 저장했던 자료형으로 복구 시켜야 함
+  }, []);
+
+ */
+ 

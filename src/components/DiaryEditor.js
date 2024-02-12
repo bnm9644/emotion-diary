@@ -24,7 +24,7 @@ const DiaryEditor = ({isEdit, originData}) => {
   const [date, setDate] = useState(getStringDate(new Date()));
 
   // 배열 받으면 안됨! - 배열 받아서 자꾸 에러 난거임
-  const {onCreate, onEdit} = useContext(DiaryDispatchContext);
+  const {onCreate, onEdit , onRemove} = useContext(DiaryDispatchContext);
   
   // EmotionItem 을 클릭 할때 emotion state가 변하는 함수
   const handleClickEmote = (emotion) => {
@@ -48,8 +48,15 @@ const DiaryEditor = ({isEdit, originData}) => {
       }
     };
 
-    
     navigate('/', {replace : true} ); // replace : true 옵션은 뒤로 못오게 막는 옵션,
+  }
+
+  // 수정 중 삭제 
+  const handleRemove = () => {
+    if(window.confirm("정말 삭제하시겠습니까?")) {
+      onRemove(originData.id);
+      navigate('/', {replace : true} );
+    }
   }
 
   useEffect(() => {
@@ -70,6 +77,11 @@ const DiaryEditor = ({isEdit, originData}) => {
       <MyHeader 
         headtext={isEdit? "일기 수정하기" : "새 일기 쓰기"}
         leftChild={ <MyButton text ={"< 뒤로 가기"} onClick={()=> Navigate(-1)}/> }
+        rightChild={
+          isEdit && (
+        <MyButton text ={"삭제하기"} type={"negative"} onClick = {handleRemove}/>
+          )
+        }
       />
       <div>
         <section>
